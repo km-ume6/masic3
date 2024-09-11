@@ -1,12 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Serialization;
 
@@ -16,7 +11,7 @@ namespace masic3.MyCode
     {
         [ObservableProperty] private ObservableCollection<ModelProcessItem> _processItems;
         [ObservableProperty] private ModelProcessItem? _selectedProcessItem;
-        ModelProcessItem currentProcessItem;
+        ModelProcessItem? currentProcessItem;
 
         // これらは入力用コントロールへバインドされる
         [ObservableProperty] int _editProcessId;
@@ -32,6 +27,7 @@ namespace masic3.MyCode
         {
             ProcessItems = new();
             SelectedProcessItem = null;
+            currentProcessItem = null;
 
             // バインディング用のコマンド作成
             BindSelectionChanged = new Command(SelectionChangedCommand);
@@ -117,6 +113,7 @@ namespace masic3.MyCode
                     }
 
                     processItems.Clear();
+                    ClearEditProcessItem();
                 }
             }
         }
@@ -130,7 +127,7 @@ namespace masic3.MyCode
         {
             // データ書込み（保存）
             XmlSerializer mySerializer = new XmlSerializer(typeof(ObservableCollection<ModelProcessItem>));
-            StreamWriter myWriter = new StreamWriter(MakeXmlName());
+            StreamWriter myWriter = new(MakeXmlName());
             mySerializer.Serialize(myWriter, ProcessItems);
             myWriter.Close();
 
