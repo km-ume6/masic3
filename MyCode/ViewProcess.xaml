@@ -27,7 +27,7 @@
                 <Button Grid.Row="0" Text="更新" HeightRequest="0.5" Command="{Binding UpdateProcessItemCommand}"/>
                 <Button Grid.Row="0" Text="削除" HeightRequest="0.5" Command="{Binding RemoveProcessItemCommand}"/>
                 <CheckBox Grid.Row="0" IsChecked="{Binding IsChecked1}"/>
-                <Button Grid.Row="0" Text="実行" HeightRequest="0.5" Command="{Binding TestCommand}"/>
+                <Button Grid.Row="0" Text="実行する？" HeightRequest="0.5" Command="{Binding TestCommand}"/>
             </HorizontalStackLayout>
 
             <!-- プロセス入力エリア -->
