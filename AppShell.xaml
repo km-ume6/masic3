@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="masic3.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:masic3"
+    xmlns:MyCode="clr-namespace:masic3.MyCode"
+    Shell.FlyoutBehavior="Disabled"
+    Title="masic3">
+
+    <TabBar>
+        <Tab Title="Main">
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}"/>
+        </Tab>
+        <Tab Title="Process">
+            <ShellContent ContentTemplate="{DataTemplate MyCode:ViewProcess}"/>
+        </Tab>
+    </TabBar>
+</Shell>
