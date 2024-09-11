@@ -64,7 +64,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="MyCode\VIewProcess.xaml.cs">
+	  <Compile Update="MyCode\ViewProcess.xaml.cs">
 	    <DependentUpon>ViewProcess.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>

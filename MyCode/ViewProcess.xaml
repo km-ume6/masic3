@@ -8,10 +8,93 @@
         <VM:ViewModelProcess/>
     </ContentPage.BindingContext>
 
-    <VerticalStackLayout>
-        <Label 
-            Text="{Binding MyMessage}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
-</ContentPage>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <!-- プロセス設定ボタンエリア -->
+                <RowDefinition Height="0.2*"/>
+                <!-- プロセス入力 -->
+                <RowDefinition Height="0.25*"/>
+                <!-- プロセス一覧 -->
+                <RowDefinition Height="*"/>
+                <!-- コマンドエリア -->
+                <RowDefinition Height="0.25*"/>
+            </Grid.RowDefinitions>
+
+            <!-- プロセス設定ボタンエリア -->
+            <HorizontalStackLayout Grid.Row="0" Spacing="5">
+                <Button Grid.Row="0" Text="追加" HeightRequest="0.5" Command="{Binding AddProcessItemCommand}"/>
+                <Button Grid.Row="0" Text="更新" HeightRequest="0.5" Command="{Binding UpdateProcessItemCommand}"/>
+                <Button Grid.Row="0" Text="削除" HeightRequest="0.5" Command="{Binding RemoveProcessItemCommand}"/>
+                <CheckBox Grid.Row="0" IsChecked="{Binding IsChecked1}"/>
+                <Button Grid.Row="0" Text="実行" HeightRequest="0.5" Command="{Binding TestCommand}"/>
+            </HorizontalStackLayout>
+
+            <!-- プロセス入力エリア -->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.4*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.15*" x:Name="C1"/>
+                    <ColumnDefinition Width="1.0*" x:Name="C2"/>
+                    <ColumnDefinition Width="0.3*" x:Name="C3"/>
+                    <ColumnDefinition Width="*" x:Name="C4"/>
+                </Grid.ColumnDefinitions>
+
+                <StackLayout Grid.Row="0" Grid.Column="0">
+                    <Label Text="番号" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                </StackLayout>
+                <StackLayout Grid.Row="1" Grid.Column="0" VerticalOptions="Center">
+                    <Label Text="{Binding EditProcessId}" VerticalTextAlignment="Center" HorizontalTextAlignment="End" x:Name="C1H"/>
+                </StackLayout>
+                <StackLayout Grid.Row="0" Grid.Column="1">
+                    <Label Text="コマンド" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
+                </StackLayout>
+                <StackLayout Grid.Row="1" Grid.Column="1">
+                    <Entry Text="{Binding EditProcessName}" HorizontalTextAlignment="End" x:Name="C2H"/>
+                </StackLayout>
+                <StackLayout Grid.Row="0" Grid.Column="2">
+                    <Label Text="データ" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                </StackLayout>
+                <StackLayout Grid.Row="1" Grid.Column="2">
+                    <Entry Text="{Binding EditProcessData}" HorizontalTextAlignment="End" x:Name="C3H"/>
+                </StackLayout>
+                <StackLayout Grid.Row="0" Grid.Column="3">
+                    <Label Text="時間" VerticalTextAlignment="Center" HorizontalOptions="Center"/>
+                </StackLayout>
+                <StackLayout Grid.Row="1" Grid.Column="3" Padding="0,6,0,0">
+                    <TimePicker Format="HH:mm" Time="{Binding EditProcessTime}" HorizontalOptions="Center" x:Name="C4H"/>
+                </StackLayout>
+            </Grid>
+
+            <!-- プロセス一覧エリア(CollectionView) -->
+            <StackLayout Grid.Row="2" VerticalOptions="FillAndExpand">
+                <CollectionView x:Name="ProcessItemCV" ItemsSource="{Binding ProcessItems}" SelectionMode="Single" SelectedItem="{Binding SelectedProcessItem}" SelectionChangedCommand="{Binding BindSelectionChanged}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{Binding Source={x:Reference C1}, Path=Width}"/>
+                                    <ColumnDefinition Width="{Binding Source={x:Reference C2}, Path=Width}"/>
+                                    <ColumnDefinition Width="{Binding Source={x:Reference C3}, Path=Width}"/>
+                                    <ColumnDefinition Width="{Binding Source={x:Reference C4}, Path=Width}"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0" Text="{Binding ProcessId}" HorizontalTextAlignment="{Binding Source={x:Reference C1H}, Path=HorizontalTextAlignment}"/>
+                                <Label Grid.Column="1" Text="{Binding ProcessCommand}" HorizontalTextAlignment="{Binding Source={x:Reference C1H}, Path=HorizontalTextAlignment}"/>
+                                <Label Grid.Column="2" Text="{Binding ProcessData}" HorizontalTextAlignment="{Binding Source={x:Reference C1H}, Path=HorizontalTextAlignment}"/>
+                                <Label Grid.Column="3" Text="{Binding ProcessTimeToString}" HorizontalOptions="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!-- コマンドエリア -->
+            <StackLayout Grid.Row="3" Padding="5" VerticalOptions="FillAndExpand">
+                <Button VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Text="終了" Command="{Binding FinalizationCommand}"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content></ContentPage>
