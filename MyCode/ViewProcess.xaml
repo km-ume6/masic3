@@ -24,7 +24,7 @@
             </Grid.RowDefinitions>
 
             <!-- プロセス設定ボタンエリア -->
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -41,7 +41,7 @@
             </Grid>
 
             <!-- プロセス入力エリア -->
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" Style="{StaticResource gridStyle}">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -91,7 +91,7 @@
             </Grid>
 
             <!-- プロセス一覧エリア(CollectionView) -->
-            <Grid Grid.Row="2" VerticalOptions="FillAndExpand">
+            <Grid Grid.Row="2" Margin="10" VerticalOptions="FillAndExpand">
                 <CollectionView x:Name="ProcessItemCV" ItemsSource="{Binding ProcessItems}" SelectionMode="Single" SelectedItem="{Binding SelectedProcessItem}" SelectionChangedCommand="{Binding BindSelectionChanged}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
@@ -111,6 +111,11 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+            </Grid>
+
+            <!-- モニタエリア -->
+            <Grid Grid.Row="3">
+                <Label Text="モニタ"/>
             </Grid>
 
             <!-- コマンドエリア -->

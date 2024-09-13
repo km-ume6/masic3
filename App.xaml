@@ -9,6 +9,11 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
+            <Style x:Key="gridStyle" TargetType="Grid">
+                <Setter Property="Margin"
+                        Value="5" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
