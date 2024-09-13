@@ -12,7 +12,7 @@
             
             <Style x:Key="gridStyle" TargetType="Grid">
                 <Setter Property="Margin"
-                        Value="5" />
+                        Value="10" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>
