@@ -179,7 +179,7 @@ namespace masic3.MyCode
         }
 
         /// <summary>
-        /// ワーカースレッド
+        /// ワーカスレッド
         /// </summary>
         /// <param name="state"></param>
         private void ProcessThread(object? state)
@@ -208,7 +208,7 @@ namespace masic3.MyCode
                             PastProcessDateTimeText = TimeSpanToString(timeSpan);
 
                             currentProcessIndex = 0;
-                            timeSpanSum = ProcessItems[0].ProcessTime;
+                            timeSpanSum = ProcessItems[currentProcessIndex].ProcessTime;
 
                             // プロセス経過処理
                             foreach (ModelProcessItem item in ProcessItems)
@@ -224,6 +224,7 @@ namespace masic3.MyCode
                                 {
                                     // プロセス終了と判定
 
+                                    // 次のプロセスに進む準備
                                     dateTimeStartItem = dateTimeStartProcess + timeSpanSum;
                                     StartItemDateTimeText = dateTimeStartItem.ToString();
                                     timeSpanSum += item.ProcessTime;
