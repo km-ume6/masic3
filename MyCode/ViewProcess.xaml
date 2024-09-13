@@ -12,15 +12,15 @@
         <Grid>
             <Grid.RowDefinitions>
                 <!-- プロセス設定ボタンエリア -->
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.7*"/>
                 <!-- プロセス入力 -->
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="1*"/>
                 <!-- プロセス一覧 -->
                 <RowDefinition Height="*"/>
                 <!-- モニタエリア -->
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="1*"/>
                 <!-- コマンドエリア -->
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.7*"/>
             </Grid.RowDefinitions>
 
             <!-- プロセス設定ボタンエリア -->
@@ -29,17 +29,17 @@
                 Grid.Row="0"
                 >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="0" Text="追加" Command="{Binding AddProcessItemCommand}"/>
                 <Button Grid.Column="1" Text="更新" Command="{Binding UpdateProcessItemCommand}"/>
                 <Button Grid.Column="2" Text="削除" Command="{Binding RemoveProcessItemCommand}"/>
-                <CheckBox Grid.Column="3" IsChecked="{Binding IsChecked1}"/>
+                <CheckBox Grid.Column="3" IsChecked="{Binding IsChecked1}" HorizontalOptions="Center"/>
                 <Button Grid.Column="4" Text="実行する？"/>
             </Grid>
 
@@ -49,8 +49,8 @@
                 Grid.Row="1"
                 >
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="0.7*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.15*" x:Name="C1_W"/>
@@ -59,41 +59,48 @@
                     <ColumnDefinition Width="*" x:Name="C4_W"/>
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Text="番号"
-                       VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
-                />
-                <Label Grid.Row="0" Grid.Column="1" Text="コマンド"
-                       VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
-                       HorizontalOptions="Center"
-                />
-                <Label Grid.Row="0" Grid.Column="2" Text="データ"
-                       VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
-                />
-                <Label Grid.Row="0" Grid.Column="3" Text="時間"
-                       VerticalTextAlignment="Center" HorizontalOptions="Center"
-                />
-                <Label Grid.Row="1" Grid.Column="0" Text="{Binding EditProcessId}"
+                <!-- 入力 -->
+                <Label Grid.Row="0" Grid.Column="0" Text="{Binding EditProcessId}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="End"
+                       VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C1_HTA"
                 />
-                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding EditProcessName}"
+                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding EditProcessName}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="End"
+                       VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C2_HTA"
                 />
-                <Entry Grid.Row="1" Grid.Column="2" Text="{Binding EditProcessData}"
+                <Entry Grid.Row="0" Grid.Column="2" Text="{Binding EditProcessData}"
                        HorizontalTextAlignment="End"
+                       VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C3_HTA"
                 />
-                <StackLayout Grid.Row="1" Grid.Column="3" BackgroundColor="DarkOliveGreen" Padding="0,6,0,0">
-                    <TimePicker Time="{Binding EditProcessTime}" Format="HH:mm"
-                                HorizontalOptions="Center"
-                                BackgroundColor="DarkOliveGreen"
-                                x:Name="C4_HTA"
+                <TimePicker Grid.Row="0" Grid.Column="3" Time="{Binding EditProcessTime}" Format="HH:mm"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Fill"
+                            BackgroundColor="DarkOliveGreen"
+                            x:Name="C4_HTA"
+                />
+                <Label Grid.Row="1" Grid.Column="0" Text="番号"
+                       Style="{StaticResource labelStyle}"
+                       VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
                     />
-                </StackLayout>
+                <Label Grid.Row="1" Grid.Column="1" Text="コマンド"
+                       Style="{StaticResource labelStyle}"
+                       VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                    />
+                <Label Grid.Row="1" Grid.Column="2" Text="データ"
+                       Style="{StaticResource labelStyle}"
+                       VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+                    />
+                <Label Grid.Row="1" Grid.Column="3" Text="時間"
+                       Style="{StaticResource labelStyle}"
+                       VerticalTextAlignment="Center" HorizontalOptions="Center"
+                    />
             </Grid>
 
             <!-- プロセス一覧エリア(CollectionView) -->
@@ -114,10 +121,21 @@
                                     <ColumnDefinition Width="{Binding Source={x:Reference C4_W}, Path=Width}"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Column="0" Text="{Binding ProcessId}" HeightRequest="25" HorizontalTextAlignment="{Binding Source={x:Reference C1_HTA}, Path=HorizontalTextAlignment}"/>
-                                <Label Grid.Column="1" Text="{Binding ProcessCommand}" HorizontalTextAlignment="{Binding Source={x:Reference C2_HTA}, Path=HorizontalTextAlignment}"/>
-                                <Label Grid.Column="2" Text="{Binding ProcessData}" HorizontalTextAlignment="{Binding Source={x:Reference C3_HTA}, Path=HorizontalTextAlignment}"/>
-                                <Label Grid.Column="3" Text="{Binding ProcessTimeToString}" HorizontalOptions="Center"/>
+                                <Label Grid.Column="0" Text="{Binding ProcessId}" HeightRequest="25" HorizontalTextAlignment="{Binding Source={x:Reference C1_HTA}, Path=HorizontalTextAlignment}"
+                                       VerticalTextAlignment="Center"
+                                />
+                                <Label Grid.Column="1" Text="{Binding ProcessCommand}"
+                                       HorizontalTextAlignment="{Binding Source={x:Reference C2_HTA}, Path=HorizontalTextAlignment}"
+                                       VerticalTextAlignment="Center"
+                                />
+                                <Label Grid.Column="2" Text="{Binding ProcessData}"
+                                       HorizontalTextAlignment="{Binding Source={x:Reference C3_HTA}, Path=HorizontalTextAlignment}"
+                                       VerticalTextAlignment="Center"
+                                />
+                                <Label Grid.Column="3" Text="{Binding ProcessTimeToString}"
+                                       HorizontalOptions="Center"
+                                       VerticalTextAlignment="Center"
+                                />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

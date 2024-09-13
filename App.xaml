@@ -9,10 +9,15 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <Style x:Key="gridStyle" TargetType="Grid">
                 <Setter Property="Margin"
                         Value="10" />
+            </Style>
+
+            <Style x:Key="labelStyle" TargetType="Label">
+                <Setter Property="VerticalOptions"
+                        Value="Center" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>
