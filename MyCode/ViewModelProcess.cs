@@ -18,8 +18,15 @@ namespace masic3.MyCode
         [ObservableProperty] TimeSpan _editProcessTime;
         [ObservableProperty] string _editProcessName = string.Empty;
         [ObservableProperty] int _editProcessData;
-        [ObservableProperty] bool _isChecked1;
-        
+        [ObservableProperty] bool _isRunning;
+        [ObservableProperty] string _startProcessDateTimeText = string.Empty;
+        [ObservableProperty] string _startItemDateTimeText = string.Empty;
+        [ObservableProperty] string _pastProcessDateTimeText = string.Empty;
+        [ObservableProperty] string _pastItemDateTimeText = string.Empty;
+
+        DateTime dateTimeStartProcess;
+        DateTime dateTimeStartItem;
+
         [ObservableProperty] public string _myMessage = string.Empty;
         public ICommand BindSelectionChanged { get; private set; }
 
@@ -28,6 +35,9 @@ namespace masic3.MyCode
             ProcessItems = new();
             SelectedProcessItem = null;
             currentProcessItem = null;
+
+            dateTimeStartProcess = DateTime.MinValue;
+            dateTimeStartItem = DateTime.MinValue;
 
             // バインディング用のコマンド作成
             BindSelectionChanged = new Command(SelectionChangedCommand);
@@ -117,7 +127,7 @@ namespace masic3.MyCode
                 }
             }
         }
-        
+
         /// <summary>
         /// アプリ終了処理
         /// ・CollectionViewの内容をファイルに保存する
@@ -132,6 +142,17 @@ namespace masic3.MyCode
             myWriter.Close();
 
             Application.Current?.Quit();
+        }
+
+        public void CheckedIsRunning()
+        {
+            dateTimeStartProcess = DateTime.Now;
+            dateTimeStartItem = dateTimeStartProcess;
+            if (IsRunning == true)
+            {
+                StartProcessDateTimeText = dateTimeStartProcess.ToString();
+                StartItemDateTimeText = StartProcessDateTimeText;
+            }
         }
 
         /// <summary>
@@ -152,6 +173,11 @@ namespace masic3.MyCode
             EditProcessData = 0;
         }
 
+        string TimeSpanToString(TimeSpan ts)
+        {
+            return $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}";
+        }
+
         /// <summary>
         /// ワーカースレッド
         /// </summary>
@@ -161,9 +187,61 @@ namespace masic3.MyCode
             Debug.WriteLine("スレッド開始！");
             masic3.MyCode.ModelShare.Working = true;
 
+            DateTime dateTimeNow;
+            TimeSpan timeSpan;
+            TimeSpan timeSpanSum = new(0, 0, 0);
+            int currentProcessIndex;
+
             do
             {
-                MyMessage = $"Welcome at {DateTime.Now}";
+                //MyMessage = $"Welcome at {DateTime.Now}";
+
+                if (IsRunning == true)
+                {
+                    if (ProcessItems.Count > 0)
+                    {
+                        dateTimeNow = DateTime.Now;
+                        if (dateTimeNow >= dateTimeStartProcess)
+                        {
+                            // 制御経過時間を計算する
+                            timeSpan = dateTimeNow - dateTimeStartProcess;
+                            PastProcessDateTimeText = TimeSpanToString(timeSpan);
+
+                            currentProcessIndex = 0;
+                            timeSpanSum = ProcessItems[0].ProcessTime;
+
+                            // プロセス経過処理
+                            foreach (ModelProcessItem item in ProcessItems)
+                            {
+                                // プロセス経過時間文字列を作る
+                                PastItemDateTimeText = TimeSpanToString(dateTimeNow - dateTimeStartItem);
+
+                                if (timeSpan < timeSpanSum)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    // プロセス終了と判定
+
+                                    dateTimeStartItem = dateTimeStartProcess + timeSpanSum;
+                                    StartItemDateTimeText = dateTimeStartItem.ToString();
+                                    timeSpanSum += item.ProcessTime;
+                                }
+
+                                currentProcessIndex++;
+                            }
+
+                            if (currentProcessIndex >= ProcessItems.Count)
+                            {
+                                // 制御終了と判定
+
+                                IsRunning = false;
+                                continue;
+                            }
+                        }
+                    }
+                }
 
                 Thread.Sleep(1000);
             } while (masic3.MyCode.ModelShare.EnableThreadLoop == true);
