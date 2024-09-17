@@ -216,6 +216,7 @@ namespace masic3.MyCode
                             {
                                 if (timeSpan < timeSpanSum)
                                 {
+                                    Processing(currentProcessIndex, dateTimeNow - dateTimeStartItem);
                                     break;
                                 }
                                 else
@@ -254,6 +255,23 @@ namespace masic3.MyCode
 
             masic3.MyCode.ModelShare.Working = false;
             Debug.WriteLine("スレッド終了！");
+        }
+
+        int Processing(int index, TimeSpan timeSpan)
+        {
+            int ret = 0;
+            switch (ProcessItems[index].ProcessCommand.ToUpper())
+            {
+                case "KP-OUT":
+                    double StartValue = (index > 0) ? ProcessItems[index - 1].ProcessData : 0.0;
+                    double TargetValue = ProcessItems[index].ProcessData;
+                    double ChangeValue = TargetValue - StartValue;
+                    double CurrentValue = StartValue + ChangeValue * (timeSpan.TotalSeconds / ProcessItems[index].ProcessTime.TotalSeconds);
+                    Debug.WriteLine($"KP-OUT:{CurrentValue:0.0}");
+                    break;
+            }
+
+            return ret;
         }
     }
 }
