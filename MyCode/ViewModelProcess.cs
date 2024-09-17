@@ -24,6 +24,7 @@ namespace masic3.MyCode
         [ObservableProperty] string _pastProcessDateTimeText = string.Empty;
         [ObservableProperty] string _pastItemDateTimeText = string.Empty;
         [ObservableProperty] string _currentProcessIndexText;
+        [ObservableProperty] bool _isCheckedTest;
 
         DateTime dateTimeStartProcess;
         DateTime dateTimeStartItem;
@@ -216,7 +217,7 @@ namespace masic3.MyCode
                             {
                                 if (timeSpan < timeSpanSum)
                                 {
-                                    Processing(currentProcessIndex, dateTimeNow - dateTimeStartItem);
+                                    currentProcessIndex += Processing(currentProcessIndex, dateTimeNow - dateTimeStartItem);
                                     break;
                                 }
                                 else
@@ -242,6 +243,7 @@ namespace masic3.MyCode
                             if (currentProcessIndex >= ProcessItems.Count)
                             {
                                 // 制御終了と判定
+                                Debug.WriteLine("制御完了");
 
                                 IsRunning = false;
                                 continue;
@@ -268,6 +270,13 @@ namespace masic3.MyCode
                     double ChangeValue = TargetValue - StartValue;
                     double CurrentValue = StartValue + ChangeValue * (timeSpan.TotalSeconds / ProcessItems[index].ProcessTime.TotalSeconds);
                     Debug.WriteLine($"KP-OUT:{CurrentValue:0.0}");
+                    break;
+                case "KP-WAIT-EVENT":
+                    if (IsCheckedTest == true)
+                    {
+                        ret = 1;
+                    }
+                    Debug.WriteLine("KP-WAIT-EVENT");
                     break;
             }
 
