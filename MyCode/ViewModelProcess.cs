@@ -23,6 +23,7 @@ namespace masic3.MyCode
         [ObservableProperty] string _startItemDateTimeText = string.Empty;
         [ObservableProperty] string _pastProcessDateTimeText = string.Empty;
         [ObservableProperty] string _pastItemDateTimeText = string.Empty;
+        [ObservableProperty] string _currentProcessIndexText;
 
         DateTime dateTimeStartProcess;
         DateTime dateTimeStartItem;
@@ -151,7 +152,7 @@ namespace masic3.MyCode
             if (IsRunning == true)
             {
                 StartProcessDateTimeText = dateTimeStartProcess.ToString();
-                StartItemDateTimeText = StartProcessDateTimeText;
+                //StartItemDateTimeText = dateTimeStartItem.ToString("HH:mm:ss");
             }
         }
 
@@ -213,25 +214,29 @@ namespace masic3.MyCode
                             // プロセス経過処理
                             foreach (ModelProcessItem item in ProcessItems)
                             {
-                                // プロセス経過時間文字列を作る
-                                PastItemDateTimeText = TimeSpanToString(dateTimeNow - dateTimeStartItem);
-
                                 if (timeSpan < timeSpanSum)
                                 {
                                     break;
                                 }
                                 else
                                 {
-                                    // プロセス終了と判定
+                                    // プロセスが終了と判定
 
                                     // 次のプロセスに進む準備
                                     dateTimeStartItem = dateTimeStartProcess + timeSpanSum;
-                                    StartItemDateTimeText = dateTimeStartItem.ToString();
                                     timeSpanSum += item.ProcessTime;
                                 }
 
                                 currentProcessIndex++;
                             }
+
+                            // コントロール表示更新
+                            if (currentProcessIndex < ProcessItems.Count)
+                            {
+                                CurrentProcessIndexText = ProcessItems[currentProcessIndex].ProcessId.ToString();
+                            }
+                            StartItemDateTimeText = dateTimeStartItem.ToString("HH:mm:ss");
+                            PastItemDateTimeText = TimeSpanToString(dateTimeNow - dateTimeStartItem);
 
                             if (currentProcessIndex >= ProcessItems.Count)
                             {

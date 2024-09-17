@@ -53,10 +53,10 @@
                     <RowDefinition Height="0.7*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.15*" x:Name="C1_W"/>
-                    <ColumnDefinition Width="1.0*" x:Name="C2_W"/>
-                    <ColumnDefinition Width="0.3*" x:Name="C3_W"/>
-                    <ColumnDefinition Width="*" x:Name="C4_W"/>
+                    <ColumnDefinition Width="*" x:Name="C1_W"/>
+                    <ColumnDefinition Width="*" x:Name="C2_W"/>
+                    <ColumnDefinition Width="*" x:Name="C3_W"/>
+                    <ColumnDefinition Width="2*" x:Name="C4_W"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- 入力 -->
@@ -147,41 +147,72 @@
                 Style="{StaticResource gridStyle}"
                 Grid.Row="3"
                 >
-                <Grid>
+
+                <Grid 
+                    Style="{StaticResource gridStyle}"
+                >
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="2.5*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Text="制御開始日時"
+
+                    <!-- 制御モニタ-->
+                    <Grid 
+                        Style="{StaticResource gridStyle}"
+                        Grid.Row="0"
+                    >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2.5*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Text="制御開始日時"
                            Style="{StaticResource labelStyle}"
-                    />
-                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding StartProcessDateTimeText}"
+                        />
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding StartProcessDateTimeText}"
                            Style="{StaticResource labelStyle}"
-                    />
-                    <Label Grid.Row="0" Grid.Column="2" Text="制御経過時間"
+                        />
+                        <Label Grid.Row="0" Grid.Column="2" Text="制御経過時間"
                            Style="{StaticResource labelStyle}"
-                    />
-                    <Label Grid.Row="0" Grid.Column="3" Text="{Binding PastProcessDateTimeText}"
+                        />
+                        <Label Grid.Row="0" Grid.Column="3" Text="{Binding PastProcessDateTimeText}"
                            Style="{StaticResource labelStyle}"
-                    />
-                    <Label Grid.Row="1" Grid.Column="0" Text="プロセス開始日時"
+                        />
+                    </Grid>
+
+                    <!-- プロセスモニタ-->
+                    <Grid 
+                        Style="{StaticResource gridStyle}"
+                        Grid.Row="1"
+                    >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="1" Grid.Column="0" Text="プロセス番号"
                            Style="{StaticResource labelStyle}"
-                    />
-                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding StartItemDateTimeText}"
+                        />
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding CurrentProcessIndexText}"
                            Style="{StaticResource labelStyle}"
-                    />
-                    <Label Grid.Row="1" Grid.Column="2" Text="プロセス経過時間"
+                        />
+                        <Label Grid.Row="1" Grid.Column="2" Text="プロセス開始"
                            Style="{StaticResource labelStyle}"
-                    />
-                    <Label Grid.Row="1" Grid.Column="3" Text="{Binding PastItemDateTimeText}"
+                        />
+                        <Label Grid.Row="1" Grid.Column="3" Text="{Binding StartItemDateTimeText}"
                            Style="{StaticResource labelStyle}"
-                    />
+                        />
+                        <Label Grid.Row="1" Grid.Column="4" Text="プロセス経過"
+                           Style="{StaticResource labelStyle}"
+                        />
+                        <Label Grid.Row="1" Grid.Column="5" Text="{Binding PastItemDateTimeText}"
+                           Style="{StaticResource labelStyle}"
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
 
