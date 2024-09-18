@@ -11,9 +11,9 @@
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="65"/>
                 <!-- プロセス設定ボタンエリア -->
-                <RowDefinition Height="0.8*"/>
+                <RowDefinition Height="85"/>
                 <!-- プロセス入力 -->
                 <RowDefinition Height="*"/>
                 <!-- プロセス一覧 -->
@@ -23,8 +23,8 @@
                 <!-- コマンドエリア -->
             </Grid.RowDefinitions>
 
-            <!-- プロセス設定ボタンエリア（Gridに対して共通スタイルを適用） -->
-            <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Start">
+            <!-- プロセス設定ボタンエリア -->
+            <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Start" Spacing="4">
                 <Button Text="追加" Command="{Binding AddProcessItemCommand}"/>
                 <Button Text="挿入" Command="{Binding InsertProcessItemCommand}"/>
                 <Button Text="更新" Command="{Binding UpdateProcessItemCommand}"/>
@@ -58,7 +58,7 @@
                 </Grid>
             </HorizontalStackLayout>
 
-            <!-- プロセス入力エリア -->
+            <!-- プロセス入力エリア（Gridに対して共通スタイルを適用） -->
             <Grid
                 Style="{StaticResource gridStyle}"
                 Grid.Row="1"
@@ -72,26 +72,29 @@
 
                 <!-- パラメータに名前を付けて他のコントロールで参照できるようにしている -->
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" x:Name="C1_W"/>
-                    <ColumnDefinition Width="*" x:Name="C2_W"/>
+                    <ColumnDefinition Width="45" x:Name="C1_W"/>
+                    <ColumnDefinition Width="230" x:Name="C2_W"/>
                     <ColumnDefinition Width="*" x:Name="C3_W"/>
-                    <ColumnDefinition Width="2*" x:Name="C4_W"/>
+                    <ColumnDefinition Width="245" x:Name="C4_W"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- プロセスID入力 -->
-                <Label Grid.Row="0" Grid.Column="0" Text="{Binding EditProcessId}"
+                <Entry Grid.Row="0" Grid.Column="0" Text="{Binding EditProcessId}"
+                       IsReadOnly="True"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="End"
-                       VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C1_HTA"
                        />
                 <!-- プロセスコマンド -->
-                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding EditProcessCommand}"
+                <!--<Entry Grid.Row="0" Grid.Column="1" Text="{Binding EditProcessCommand}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="End"
-                       VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C2_HTA"
-                       />
+                       />-->
+                <Picker Grid.Row="0" Grid.Column="1" ItemsSource="{Binding CommandItems}" SelectedItem="{Binding EditProcessCommand}"
+                       BackgroundColor="DarkOliveGreen"
+                       x:Name="C2_HTA"
+                        />
                 <!-- プロセスパラメータ -->
                 <Entry Grid.Row="0" Grid.Column="2" Text="{Binding EditProcessParam}"
                        HorizontalTextAlignment="End"
@@ -245,7 +248,7 @@
             <!-- コマンドエリア -->
             <HorizontalStackLayout
                 Grid.Row="4"
-                Padding="5"
+                Spacing="2"
                 VerticalOptions="FillAndExpand"
                 HorizontalOptions="End"
                 >

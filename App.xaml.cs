@@ -21,7 +21,7 @@ namespace masic3
 
             // Windowサイズを設定
             var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
-            window.MinimumWidth = window.Width = displayInfo.Width / 3;
+            window.MinimumWidth = window.Width = displayInfo.Width / 2.5;
             window.MinimumHeight = window.Height = displayInfo.Height / 2;
 
             // Window破棄イベントを追加
