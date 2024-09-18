@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Graphics.Text;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -15,15 +16,15 @@ namespace masic3.MyCode
 
         // これらは入力用コントロールへバインドされる
         [ObservableProperty] int _editProcessId;
+        [ObservableProperty] string _editProcessCommand = string.Empty;
+        [ObservableProperty] string _editProcessParam = string.Empty;
         [ObservableProperty] TimeSpan _editProcessTime;
-        [ObservableProperty] string _editProcessName = string.Empty;
-        [ObservableProperty] int _editProcessData;
         [ObservableProperty] bool _isRunning;
         [ObservableProperty] string _startProcessDateTimeText = string.Empty;
         [ObservableProperty] string _startItemDateTimeText = string.Empty;
         [ObservableProperty] string _pastProcessDateTimeText = string.Empty;
         [ObservableProperty] string _pastItemDateTimeText = string.Empty;
-        [ObservableProperty] string _currentProcessIndexText;
+        [ObservableProperty] string _currentProcessIndexText = string.Empty;
         [ObservableProperty] bool _isCheckedTest;
 
         DateTime dateTimeStartProcess;
@@ -68,9 +69,9 @@ namespace masic3.MyCode
             if (SelectedProcessItem != null)
             {
                 EditProcessId = SelectedProcessItem.ProcessId;
+                EditProcessCommand = SelectedProcessItem.ProcessCommand;
+                EditProcessParam = SelectedProcessItem.ProcessParam;
                 EditProcessTime = SelectedProcessItem.ProcessTime;
-                EditProcessName = SelectedProcessItem.ProcessCommand;
-                EditProcessData = SelectedProcessItem.ProcessData;
 
                 currentProcessItem = SelectedProcessItem;
                 SelectedProcessItem = null;
@@ -81,7 +82,20 @@ namespace masic3.MyCode
         void AddProcessItem()
         {
             currentProcessItem = null;
-            ProcessItems.Add(new ModelProcessItem(ProcessItems.Count + 1, EditProcessTime, EditProcessName, EditProcessData));
+            ProcessItems.Add(new ModelProcessItem(ProcessItems.Count + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
+        }
+
+        [RelayCommand]
+        void InsertProcessItem()
+        {
+            if (currentProcessItem != null)
+            {
+                int index = ProcessItems.IndexOf(currentProcessItem);
+                if (index > -1)
+                {
+                    ProcessItems.Insert(index, new ModelProcessItem(index, EditProcessCommand, EditProcessParam, EditProcessTime));
+                }
+            }
         }
 
         [RelayCommand]
@@ -93,7 +107,7 @@ namespace masic3.MyCode
                 if (index > -1)
                 {
                     ProcessItems.RemoveAt(index);
-                    ProcessItems.Insert(index, new ModelProcessItem(index + 1, EditProcessTime, EditProcessName, EditProcessData));
+                    ProcessItems.Insert(index, new ModelProcessItem(index + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
                 }
             }
         }
@@ -138,7 +152,7 @@ namespace masic3.MyCode
         void Finalization()
         {
             // データ書込み（保存）
-            XmlSerializer mySerializer = new XmlSerializer(typeof(ObservableCollection<ModelProcessItem>));
+            XmlSerializer mySerializer = new (typeof(ObservableCollection<ModelProcessItem>));
             StreamWriter myWriter = new(MakeXmlName());
             mySerializer.Serialize(myWriter, ProcessItems);
             myWriter.Close();
@@ -170,9 +184,9 @@ namespace masic3.MyCode
         void ClearEditProcessItem()
         {
             EditProcessId = 0;
+            EditProcessCommand = string.Empty;
+            EditProcessParam = string.Empty;
             EditProcessTime = TimeSpan.Zero;
-            EditProcessName = string.Empty;
-            EditProcessData = 0;
         }
 
         string TimeSpanToString(TimeSpan ts)
@@ -191,7 +205,7 @@ namespace masic3.MyCode
 
             DateTime dateTimeNow;
             TimeSpan timeSpan;
-            TimeSpan timeSpanSum = new(0, 0, 0);
+            TimeSpan timeSpanSum;
             int currentProcessIndex;
 
             do
@@ -265,8 +279,8 @@ namespace masic3.MyCode
             switch (ProcessItems[index].ProcessCommand.ToUpper())
             {
                 case "KP-OUT":
-                    double StartValue = (index > 0) ? ProcessItems[index - 1].ProcessData : 0.0;
-                    double TargetValue = ProcessItems[index].ProcessData;
+                    double StartValue = double.Parse( (index > 0) ? ProcessItems[index - 1].ProcessParam : "0.0");
+                    double TargetValue = double.Parse(ProcessItems[index].ProcessParam);
                     double ChangeValue = TargetValue - StartValue;
                     double CurrentValue = StartValue + ChangeValue * (timeSpan.TotalSeconds / ProcessItems[index].ProcessTime.TotalSeconds);
                     Debug.WriteLine($"KP-OUT:{CurrentValue:0.0}");

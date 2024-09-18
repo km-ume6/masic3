@@ -11,53 +11,52 @@
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
                 <!-- プロセス設定ボタンエリア -->
-                <RowDefinition Height="0.7*"/>
+                <RowDefinition Height="0.8*"/>
                 <!-- プロセス入力 -->
-                <RowDefinition Height="1*"/>
-                <!-- プロセス一覧 -->
                 <RowDefinition Height="*"/>
-                <!-- モニタエリア -->
+                <!-- プロセス一覧 -->
                 <RowDefinition Height="1*"/>
+                <!-- モニタエリア -->
+                <RowDefinition Height="0.5*"/>
                 <!-- コマンドエリア -->
-                <RowDefinition Height="0.7*"/>
             </Grid.RowDefinitions>
 
-            <!-- プロセス設定ボタンエリア -->
-            <Grid
-                Style="{StaticResource gridStyle}"
-                Grid.Row="0"
-                >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="0.4*"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
+            <!-- プロセス設定ボタンエリア（Gridに対して共通スタイルを適用） -->
+            <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Start">
+                <Button Text="追加" Command="{Binding AddProcessItemCommand}"/>
+                <Button Text="挿入" Command="{Binding InsertProcessItemCommand}"/>
+                <Button Text="更新" Command="{Binding UpdateProcessItemCommand}"/>
+                <Button Text="削除" Command="{Binding RemoveProcessItemCommand}"/>
 
-                <Button Grid.Column="0" Text="追加" Command="{Binding AddProcessItemCommand}"/>
-                <Button Grid.Column="1" Text="更新" Command="{Binding UpdateProcessItemCommand}"/>
-                <Button Grid.Column="2" Text="削除" Command="{Binding RemoveProcessItemCommand}"/>
-
-                <Grid Grid.Column="3">
+                <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Text="Run" HorizontalTextAlignment="Center" />
-                    <CheckBox Grid.Row="1" IsChecked="{Binding IsRunning}" HorizontalOptions="Center" CheckedChanged="CheckBox_CheckedChanged" />
+                    <CheckBox Grid.Row="1" IsChecked="{Binding IsRunning}" HorizontalOptions="Center" CheckedChanged="CheckBox_CheckedChanged"/>
                 </Grid>
 
-                <Grid Grid.Column="4">
+                <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Text="Test" HorizontalTextAlignment="Center" />
-                    <CheckBox Grid.Row="1" IsChecked="{Binding IsCheckedTest}" HorizontalOptions="Center" />
+                    <Label Grid.Row="0" Text="TestParam" HorizontalTextAlignment="Center"/>
+                    <Entry Grid.Row="1"/>
                 </Grid>
-            </Grid>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Text="TestEvent" HorizontalTextAlignment="Center"/>
+                    <CheckBox Grid.Row="1" IsChecked="{Binding IsCheckedTest}"/>
+                </Grid>
+            </HorizontalStackLayout>
 
             <!-- プロセス入力エリア -->
             <Grid
@@ -66,8 +65,12 @@
                 >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
+                    <!-- 入力コントロール -->
                     <RowDefinition Height="0.7*"/>
+                    <!-- ラベル -->
                 </Grid.RowDefinitions>
+
+                <!-- パラメータに名前を付けて他のコントロールで参照できるようにしている -->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" x:Name="C1_W"/>
                     <ColumnDefinition Width="*" x:Name="C2_W"/>
@@ -75,48 +78,51 @@
                     <ColumnDefinition Width="2*" x:Name="C4_W"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- 入力 -->
+                <!-- プロセスID入力 -->
                 <Label Grid.Row="0" Grid.Column="0" Text="{Binding EditProcessId}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="End"
                        VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C1_HTA"
-                />
-                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding EditProcessName}"
+                       />
+                <!-- プロセスコマンド -->
+                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding EditProcessCommand}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="End"
                        VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C2_HTA"
-                />
-                <Entry Grid.Row="0" Grid.Column="2" Text="{Binding EditProcessData}"
+                       />
+                <!-- プロセスパラメータ -->
+                <Entry Grid.Row="0" Grid.Column="2" Text="{Binding EditProcessParam}"
                        HorizontalTextAlignment="End"
                        VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C3_HTA"
-                />
+                       />
+                <!-- プロセス時間入力 -->
                 <TimePicker Grid.Row="0" Grid.Column="3" Time="{Binding EditProcessTime}" Format="HH:mm"
                             HorizontalOptions="Center"
                             VerticalOptions="Fill"
                             BackgroundColor="DarkOliveGreen"
                             x:Name="C4_HTA"
-                />
+                            />
                 <Label Grid.Row="1" Grid.Column="0" Text="番号"
                        Style="{StaticResource labelStyle}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
-                    />
+                       />
                 <Label Grid.Row="1" Grid.Column="1" Text="コマンド"
                        Style="{StaticResource labelStyle}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
                        HorizontalOptions="Center"
-                    />
-                <Label Grid.Row="1" Grid.Column="2" Text="データ"
+                       />
+                <Label Grid.Row="1" Grid.Column="2" Text="パラメータ"
                        Style="{StaticResource labelStyle}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
-                    />
+                       />
                 <Label Grid.Row="1" Grid.Column="3" Text="時間"
                        Style="{StaticResource labelStyle}"
                        VerticalTextAlignment="Center" HorizontalOptions="Center"
-                    />
+                       />
             </Grid>
 
             <!-- プロセス一覧エリア(CollectionView) -->
@@ -131,27 +137,31 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <!-- 先に定義したパラメータを参照している -->
                                     <ColumnDefinition Width="{Binding Source={x:Reference C1_W}, Path=Width}"/>
                                     <ColumnDefinition Width="{Binding Source={x:Reference C2_W}, Path=Width}"/>
                                     <ColumnDefinition Width="{Binding Source={x:Reference C3_W}, Path=Width}"/>
                                     <ColumnDefinition Width="{Binding Source={x:Reference C4_W}, Path=Width}"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Column="0" Text="{Binding ProcessId}" HeightRequest="25" HorizontalTextAlignment="{Binding Source={x:Reference C1_HTA}, Path=HorizontalTextAlignment}"
+                                <Label Grid.Column="0" Text="{Binding ProcessId}"
+                                       Padding="2,0,2,0"
                                        VerticalTextAlignment="Center"
-                                />
+                                       />
                                 <Label Grid.Column="1" Text="{Binding ProcessCommand}"
-                                       Padding="5,0,0,0"
+                                       Padding="2,0,2,0"
                                        VerticalTextAlignment="Center"
-                                />
-                                <Label Grid.Column="2" Text="{Binding ProcessData}"
-                                       HorizontalTextAlignment="{Binding Source={x:Reference C3_HTA}, Path=HorizontalTextAlignment}"
+                                       />
+                                <Label Grid.Column="2" Text="{Binding ProcessParam}"
+                                       Padding="2,0,2,0"
                                        VerticalTextAlignment="Center"
-                                />
+                                       HorizontalTextAlignment="Start"
+                                       />
                                 <Label Grid.Column="3" Text="{Binding ProcessTimeToString}"
+                                       Padding="2,0,2,0"
                                        HorizontalOptions="Center"
                                        VerticalTextAlignment="Center"
-                                />
+                                       />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
@@ -166,7 +176,7 @@
 
                 <Grid 
                     Style="{StaticResource gridStyle}"
-                >
+                    >
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -176,7 +186,7 @@
                     <Grid 
                         Style="{StaticResource gridStyle}"
                         Grid.Row="0"
-                    >
+                        >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="2.5*"/>
@@ -185,23 +195,23 @@
                         </Grid.ColumnDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Text="制御開始日時"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                         <Label Grid.Row="0" Grid.Column="1" Text="{Binding StartProcessDateTimeText}"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                         <Label Grid.Row="0" Grid.Column="2" Text="制御経過時間"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                         <Label Grid.Row="0" Grid.Column="3" Text="{Binding PastProcessDateTimeText}"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                     </Grid>
 
                     <!-- プロセスモニタ-->
                     <Grid 
                         Style="{StaticResource gridStyle}"
                         Grid.Row="1"
-                    >
+                        >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -212,30 +222,43 @@
                         </Grid.ColumnDefinitions>
                         <Label Grid.Row="1" Grid.Column="0" Text="プロセス番号"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                         <Label Grid.Row="1" Grid.Column="1" Text="{Binding CurrentProcessIndexText}"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                         <Label Grid.Row="1" Grid.Column="2" Text="プロセス開始"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                         <Label Grid.Row="1" Grid.Column="3" Text="{Binding StartItemDateTimeText}"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                         <Label Grid.Row="1" Grid.Column="4" Text="プロセス経過"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                         <Label Grid.Row="1" Grid.Column="5" Text="{Binding PastItemDateTimeText}"
                            Style="{StaticResource labelStyle}"
-                        />
+                               />
                     </Grid>
                 </Grid>
             </Grid>
 
             <!-- コマンドエリア -->
-            <StackLayout Grid.Row="4" Padding="5" VerticalOptions="FillAndExpand">
-                <Button VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Text="終了" Command="{Binding FinalizationCommand}"/>
-            </StackLayout>
+            <HorizontalStackLayout
+                Grid.Row="4"
+                Padding="5"
+                VerticalOptions="FillAndExpand"
+                HorizontalOptions="End"
+                >
+                <Button
+                    Text="test"
+                    />
+                <Button
+                    VerticalOptions="FillAndExpand"
+                    HorizontalOptions="FillAndExpand"
+                    Text="終了"
+                    Command="{Binding FinalizationCommand}"
+                    />
+            </HorizontalStackLayout>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
