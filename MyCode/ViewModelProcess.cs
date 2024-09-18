@@ -26,6 +26,7 @@ namespace masic3.MyCode
         [ObservableProperty] string _currentProcessIndexText = string.Empty;
         [ObservableProperty] bool _isCheckedTest;
         [ObservableProperty] List<string> _commandItems;
+        [ObservableProperty] string _testParam = string.Empty;
 
         ModelProcessItem? currentProcessItem;
         DateTime dateTimeStartProcess;
@@ -44,7 +45,7 @@ namespace masic3.MyCode
             dateTimeStartItem = DateTime.MinValue;
 
             CommandItems = new();
-            if(CommandItems != null)
+            if (CommandItems != null)
             {
                 CommandItems.Add("KP-OUT");
                 CommandItems.Add("KP-SEND");
@@ -53,6 +54,8 @@ namespace masic3.MyCode
 
             // バインディング用のコマンド作成
             BindSelectionChanged = new Command(SelectionChangedCommand);
+
+            TestParam = Preferences.Get("TestParam", "");
 
             // プロセスデータ読込み
             string xmlFile = MakeXmlName();
@@ -93,20 +96,6 @@ namespace masic3.MyCode
             currentProcessItem = null;
             ProcessItems.Add(new ModelProcessItem(ProcessItems.Count + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
         }
-
-        [RelayCommand]
-        void InsertProcessItem()
-        {
-            if (currentProcessItem != null)
-            {
-                int index = ProcessItems.IndexOf(currentProcessItem);
-                if (index > -1)
-                {
-                    ProcessItems.Insert(index, new ModelProcessItem(index, EditProcessCommand, EditProcessParam, EditProcessTime));
-                }
-            }
-        }
-
         [RelayCommand]
         void UpdateProcessItem()
         {
@@ -122,6 +111,22 @@ namespace masic3.MyCode
         }
 
         [RelayCommand]
+        void InsertProcessItem()
+        {
+            if (currentProcessItem != null)
+            {
+                int index = ProcessItems.IndexOf(currentProcessItem);
+                if (index > -1)
+                {
+                    ObservableCollection<ModelProcessItem> processItems = new(ProcessItems);
+                    processItems.Insert(index, currentProcessItem);
+                    ReNumber(ref processItems);
+                }
+            }
+        }
+
+
+        [RelayCommand]
         void RemoveProcessItem()
         {
             if (currentProcessItem != null)
@@ -129,28 +134,29 @@ namespace masic3.MyCode
                 int index = ProcessItems.IndexOf(currentProcessItem);
                 if (index > -1)
                 {
-                    ProcessItems.RemoveAt(index);
-
                     ObservableCollection<ModelProcessItem> processItems = new(ProcessItems);
-                    ProcessItems.Clear();
+                    processItems.RemoveAt(index);
 
-                    ModelProcessItem item;
-                    for (int i = 0; i < processItems.Count; i++)
-                    {
-                        item = processItems[i];
+                    ReNumber(ref processItems);
 
-                        if (i >= index)
-                        {
-                            item.ProcessId--;
-                        }
-
-                        ProcessItems.Add(new ModelProcessItem(item));
-                    }
-
-                    processItems.Clear();
                     ClearEditProcessItem();
                 }
             }
+        }
+
+        void ReNumber(ref ObservableCollection<ModelProcessItem> items)
+        {
+            ProcessItems.Clear();
+
+            ModelProcessItem item;
+            for (int i = 0; i < items.Count; i++)
+            {
+                item = items[i];
+                item.ProcessId = i + 1;
+                ProcessItems.Add(new ModelProcessItem(item));
+            }
+
+            items.Clear();
         }
 
         /// <summary>
@@ -161,13 +167,13 @@ namespace masic3.MyCode
         void Finalization()
         {
             // プロセスデータ書込み（保存）
-            XmlSerializer mySerializer = new (typeof(ObservableCollection<ModelProcessItem>));
+            XmlSerializer mySerializer = new(typeof(ObservableCollection<ModelProcessItem>));
             StreamWriter myWriter = new(MakeXmlName());
             mySerializer.Serialize(myWriter, ProcessItems);
             myWriter.Close();
 
             // その他データ書込み
-            Preferences.Set("SendParam", window.X);
+            Preferences.Set("TestParam", TestParam);
 
             Application.Current?.Quit();
         }
