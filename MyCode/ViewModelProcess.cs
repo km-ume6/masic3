@@ -19,6 +19,7 @@ namespace masic3.MyCode
         [ObservableProperty] string _editProcessParam = string.Empty;
         [ObservableProperty] TimeSpan _editProcessTime;
         [ObservableProperty] bool _isRunning;
+        [ObservableProperty] bool _isAdvance;
         [ObservableProperty] string _startProcessDateTimeText = string.Empty;
         [ObservableProperty] string _startItemDateTimeText = string.Empty;
         [ObservableProperty] string _pastProcessDateTimeText = string.Empty;
@@ -28,6 +29,7 @@ namespace masic3.MyCode
         [ObservableProperty] List<string> _commandItems;
         [ObservableProperty] string _testParam = string.Empty;
 
+        private ObservableCollection<ModelProcessItem> ProcessItemsCopy;
         ModelProcessItem? currentProcessItem;
         DateTime dateTimeStartProcess;
         DateTime dateTimeStartItem;
@@ -43,6 +45,7 @@ namespace masic3.MyCode
 
             dateTimeStartProcess = DateTime.MinValue;
             dateTimeStartItem = DateTime.MinValue;
+            ProcessItemsCopy = new();
 
             CommandItems = new();
             if (CommandItems != null)
@@ -186,8 +189,21 @@ namespace masic3.MyCode
             {
                 StartProcessDateTimeText = dateTimeStartProcess.ToString();
                 //StartItemDateTimeText = dateTimeStartItem.ToString("HH:mm:ss");
+
+                // プロセスデータをコピーする
+                ProcessItemsCopy.Clear();
+                for (int i = 0; i < ProcessItems.Count; i++)
+                {
+                    ProcessItemsCopy.Add(new(ProcessItems[i]));
+                }
             }
         }
+
+        public void CheckedIsAdvance()
+        {
+
+        }
+
 
         /// <summary>
         /// 実行ファイル名の拡張子をxmlに変えた文字列を返す

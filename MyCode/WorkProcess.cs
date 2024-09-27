@@ -1,10 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Graphics.Text;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows.Input;
-using System.Xml.Serialization;
 
 namespace masic3.MyCode
 {
@@ -18,12 +13,13 @@ namespace masic3.MyCode
         private void ProcessThread(object? state)
         {
             Debug.WriteLine("スレッド開始！");
-            masic3.MyCode.ModelShare.Working = true;
+            ModelShare.Working = true;
 
             DateTime dateTimeNow;
-            TimeSpan timeSpan;
-            TimeSpan timeSpanSum;
+            TimeSpan timeSpan;      // 制御全体の経過時間
+            TimeSpan timeSpanSum;   // 現プロセスまでの設定時間積み上げ
             int currentProcessIndex;
+            bool gotoNext = false;
 
             do
             {
@@ -31,7 +27,7 @@ namespace masic3.MyCode
 
                 if (IsRunning == true)
                 {
-                    if (ProcessItems.Count > 0)
+                    if (ProcessItemsCopy.Count > 0)
                     {
                         dateTimeNow = DateTime.Now;
                         if (dateTimeNow >= dateTimeStartProcess)
@@ -41,14 +37,14 @@ namespace masic3.MyCode
                             PastProcessDateTimeText = TimeSpanToString(timeSpan);
 
                             currentProcessIndex = 0;
-                            timeSpanSum = ProcessItems[currentProcessIndex].ProcessTime;
+                            timeSpanSum = ProcessItemsCopy[currentProcessIndex].ProcessTime;
 
                             // プロセス経過処理
-                            foreach (ModelProcessItem item in ProcessItems)
+                            foreach (ModelProcessItem item in ProcessItemsCopy)
                             {
                                 if (timeSpan < timeSpanSum)
                                 {
-                                    currentProcessIndex += Processing(currentProcessIndex, dateTimeNow - dateTimeStartItem);
+                                    gotoNext = Processing(currentProcessIndex, dateTimeNow - dateTimeStartItem);
                                     break;
                                 }
                                 else
@@ -63,15 +59,25 @@ namespace masic3.MyCode
                                 currentProcessIndex++;
                             }
 
-                            // コントロール表示更新
-                            if (currentProcessIndex < ProcessItems.Count)
+                            // プロセスを次へ進める処理（Advance）
+                            if (IsAdvance == true || gotoNext == true)
                             {
-                                CurrentProcessIndexText = ProcessItems[currentProcessIndex].ProcessId.ToString();
+                                ProcessItemsCopy[currentProcessIndex].ProcessTime = dateTimeNow - dateTimeStartItem;
+                                IsAdvance = false;
+                            }
+
+                            //ModelProcessItem mi = ProcessItemsCopy[currentProcessIndex];
+                            //Debug.WriteLine($"P:{mi.ProcessId:0}, T: {(dateTimeNow - dateTimeStartItem).TotalSeconds:0} / {mi.ProcessTime.TotalSeconds:0}");
+
+                            // コントロール表示更新
+                            if (currentProcessIndex < ProcessItemsCopy.Count)
+                            {
+                                CurrentProcessIndexText = ProcessItemsCopy[currentProcessIndex].ProcessId.ToString();
                             }
                             StartItemDateTimeText = dateTimeStartItem.ToString("HH:mm:ss");
                             PastItemDateTimeText = TimeSpanToString(dateTimeNow - dateTimeStartItem);
 
-                            if (currentProcessIndex >= ProcessItems.Count)
+                            if (currentProcessIndex >= ProcessItemsCopy.Count)
                             {
                                 // 制御終了と判定
                                 Debug.WriteLine("制御完了");
@@ -84,28 +90,30 @@ namespace masic3.MyCode
                 }
 
                 Thread.Sleep(1000);
-            } while (masic3.MyCode.ModelShare.EnableThreadLoop == true);
+            } while (ModelShare.EnableThreadLoop == true);
 
-            masic3.MyCode.ModelShare.Working = false;
+            ModelShare.Working = false;
             Debug.WriteLine("スレッド終了！");
         }
 
-        int Processing(int index, TimeSpan timeSpan)
+        bool Processing(int index, TimeSpan timeSpan)
         {
-            int ret = 0;
-            switch (ProcessItems[index].ProcessCommand.ToUpper())
+            //Debug.WriteLine($"P-ID:{ProcessItemsCopy[index].ProcessId}, P-Time:{timeSpan.TotalSeconds} passed of the {ProcessItemsCopy[index].ProcessTime.TotalSeconds}");
+
+            bool ret = false;
+            switch (ProcessItemsCopy[index].ProcessCommand.ToUpper())
             {
                 case "KP-OUT":
-                    double StartValue = double.Parse((index > 0) ? ProcessItems[index - 1].ProcessParam : "0.0");
-                    double TargetValue = double.Parse(ProcessItems[index].ProcessParam);
+                    double StartValue = double.Parse((index > 0) ? ProcessItemsCopy[index - 1].ProcessParam : "0.0");
+                    double TargetValue = double.Parse(ProcessItemsCopy[index].ProcessParam);
                     double ChangeValue = TargetValue - StartValue;
-                    double CurrentValue = StartValue + ChangeValue * (timeSpan.TotalSeconds / ProcessItems[index].ProcessTime.TotalSeconds);
+                    double CurrentValue = StartValue + ChangeValue * (timeSpan.TotalSeconds / ProcessItemsCopy[index].ProcessTime.TotalSeconds);
                     Debug.WriteLine($"KP-OUT:{CurrentValue:0.0}");
                     break;
                 case "KP-WAIT-EVENT":
                     if (IsCheckedTest == true)
                     {
-                        ret = 1;
+                        ret = true;
                     }
                     Debug.WriteLine("KP-WAIT-EVENT");
                     break;

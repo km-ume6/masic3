@@ -29,6 +29,5 @@ namespace masic3.MyCode
         public ModelProcessItem(ModelProcessItem item) : this(item.ProcessId, item.ProcessCommand, item.ProcessParam, item.ProcessTime)
         {
         }
-
     }
 }

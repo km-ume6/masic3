@@ -36,7 +36,16 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Text="Run" HorizontalTextAlignment="Center" />
-                    <CheckBox Grid.Row="1" IsChecked="{Binding IsRunning}" HorizontalOptions="Center" CheckedChanged="CheckBox_CheckedChanged"/>
+                    <CheckBox Grid.Row="1" IsChecked="{Binding IsRunning}" HorizontalOptions="Center" CheckedChanged="CheckBox_CheckedChanged_IsRunning"/>
+                </Grid>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Text="Advance" HorizontalTextAlignment="Center" />
+                    <CheckBox Grid.Row="1" IsChecked="{Binding IsAdvance}" HorizontalOptions="Center" CheckedChanged="CheckBox_CheckedChanged_IsAdvance"/>
                 </Grid>
 
                 <Grid>

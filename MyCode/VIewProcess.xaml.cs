@@ -13,9 +13,14 @@ namespace masic3.MyCode
             viewModel = (ViewModelProcess)this.BindingContext;
         }
 
-        private void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
+        private void CheckBox_CheckedChanged_IsRunning(object sender, CheckedChangedEventArgs e)
         {
             viewModel.CheckedIsRunning();
+        }
+
+        private void CheckBox_CheckedChanged_IsAdvance(object sender, CheckedChangedEventArgs e)
+        {
+            viewModel.CheckedIsAdvance();
         }
     }
 }
