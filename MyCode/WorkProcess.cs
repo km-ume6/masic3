@@ -16,9 +16,9 @@ namespace masic3.MyCode
             ModelShare.Working = true;
 
             DateTime dateTimeNow;
-            TimeSpan timeSpan;      // 制御全体の経過時間
+            TimeSpan timeSpan;      // プロセス全体の経過時間
             TimeSpan timeSpanSum;   // 現プロセスまでの設定時間積み上げ
-            int currentProcessIndex;
+            int currentStepIndex;
             bool gotoNext = false;
 
             do
@@ -27,60 +27,90 @@ namespace masic3.MyCode
 
                 if (IsRunning == true)
                 {
-                    if (ProcessItemsCopy.Count > 0)
+                    if (ProcessStepsCopy.Count > 0)
                     {
                         dateTimeNow = DateTime.Now;
                         if (dateTimeNow >= dateTimeStartProcess)
                         {
-                            // 制御経過時間を計算する
+                            // プロセス経過時間を計算する
                             timeSpan = dateTimeNow - dateTimeStartProcess;
                             PastProcessDateTimeText = TimeSpanToString(timeSpan);
 
-                            currentProcessIndex = 0;
-                            timeSpanSum = ProcessItemsCopy[currentProcessIndex].ProcessTime;
+                            currentStepIndex = 0;
+                            timeSpanSum = ProcessStepsCopy[currentStepIndex].ProcessTime;
 
-                            // プロセス経過処理
-                            foreach (ModelProcessItem item in ProcessItemsCopy)
+                            // ステップ経過処理
+                            //foreach (ModelProcessStep item in ProcessStepsCopy)
+                            //{
+                            //    if (timeSpan < timeSpanSum)
+                            //    {
+                            //        gotoNext = Processing(currentStepIndex, dateTimeNow - dateTimeStartStep);
+                            //        break;
+                            //    }
+                            //    else
+                            //    {
+                            //        // ステップが終了と判定
+
+                            //        // 次のステップに進む準備
+                            //        dateTimeStartStep = dateTimeStartProcess + timeSpanSum;
+                            //        timeSpanSum += item.ProcessTime;
+                            //    }
+
+                            //    currentStepIndex++;
+                            //}
+                            ModelProcessStep item;
+                            for (int i = 0; i < ProcessStepsCopy.Count; i++)
                             {
                                 if (timeSpan < timeSpanSum)
                                 {
-                                    gotoNext = Processing(currentProcessIndex, dateTimeNow - dateTimeStartItem);
+                                    gotoNext = Processing(currentStepIndex, dateTimeNow - dateTimeStartStep);
                                     break;
                                 }
                                 else
                                 {
-                                    // プロセスが終了と判定
+                                    // ステップが終了と判定
 
-                                    // 次のプロセスに進む準備
-                                    dateTimeStartItem = dateTimeStartProcess + timeSpanSum;
-                                    timeSpanSum += item.ProcessTime;
+                                    // 次のステップに進む準備
+                                    dateTimeStartStep = dateTimeStartProcess + timeSpanSum;
+                                    if (i + 1 < ProcessStepsCopy.Count)
+                                    {
+                                        timeSpanSum += ProcessStepsCopy[i+1].ProcessTime;
+                                    }
+                                    else
+                                    {
+                                        currentStepIndex++;
+                                        break;
+                                    }
                                 }
 
-                                currentProcessIndex++;
+                                currentStepIndex++;
                             }
 
-                            // プロセスを次へ進める処理（Advance）
+                            //Debug.WriteLine($"Step:{currentStepIndex}, StepTime:{TimeSpanToString(dateTimeNow - dateTimeStartStep)}/{ProcessStepsCopy[currentStepIndex].ProcessTime}, ProcessTime:{timeSpan}/{timeSpanSum}");
+
+                            // ステップを次へ進める処理（Advance）
                             if (IsAdvance == true || gotoNext == true)
                             {
-                                ProcessItemsCopy[currentProcessIndex].ProcessTime = dateTimeNow - dateTimeStartItem;
+                                ProcessStepsCopy[currentStepIndex].ProcessTime = dateTimeNow - dateTimeStartStep;
                                 IsAdvance = false;
+                                gotoNext = false;
                             }
 
-                            //ModelProcessItem mi = ProcessItemsCopy[currentProcessIndex];
-                            //Debug.WriteLine($"P:{mi.ProcessId:0}, T: {(dateTimeNow - dateTimeStartItem).TotalSeconds:0} / {mi.ProcessTime.TotalSeconds:0}");
+                            //ModelProcessStep mi = ProcessStepsCopy[currentStepIndex];
+                            //Debug.WriteLine($"P:{mi.ProcessId:0}, T: {(dateTimeNow - dateTimeStartStep).TotalSeconds:0} / {mi.ProcessTime.TotalSeconds:0}");
 
                             // コントロール表示更新
-                            if (currentProcessIndex < ProcessItemsCopy.Count)
+                            if (currentStepIndex < ProcessStepsCopy.Count)
                             {
-                                CurrentProcessIndexText = ProcessItemsCopy[currentProcessIndex].ProcessId.ToString();
+                                CurrentProcessIndexText = ProcessStepsCopy[currentStepIndex].ProcessId.ToString();
                             }
-                            StartItemDateTimeText = dateTimeStartItem.ToString("HH:mm:ss");
-                            PastItemDateTimeText = TimeSpanToString(dateTimeNow - dateTimeStartItem);
+                            StartItemDateTimeText = dateTimeStartStep.ToString("HH:mm:ss");
+                            PastItemDateTimeText = TimeSpanToString(dateTimeNow - dateTimeStartStep);
 
-                            if (currentProcessIndex >= ProcessItemsCopy.Count)
+                            if (currentStepIndex >= ProcessStepsCopy.Count)
                             {
                                 // 制御終了と判定
-                                Debug.WriteLine("制御完了");
+                                Debug.WriteLine("プロセス終了");
 
                                 IsRunning = false;
                                 continue;
@@ -98,16 +128,16 @@ namespace masic3.MyCode
 
         bool Processing(int index, TimeSpan timeSpan)
         {
-            //Debug.WriteLine($"P-ID:{ProcessItemsCopy[index].ProcessId}, P-Time:{timeSpan.TotalSeconds} passed of the {ProcessItemsCopy[index].ProcessTime.TotalSeconds}");
+            //Debug.WriteLine($"P-ID:{ProcessStepsCopy[index].ProcessId}, P-Time:{timeSpan.TotalSeconds} passed of the {ProcessStepsCopy[index].ProcessTime.TotalSeconds}");
 
             bool ret = false;
-            switch (ProcessItemsCopy[index].ProcessCommand.ToUpper())
+            switch (ProcessStepsCopy[index].ProcessCommand.ToUpper())
             {
                 case "KP-OUT":
-                    double StartValue = double.Parse((index > 0) ? ProcessItemsCopy[index - 1].ProcessParam : "0.0");
-                    double TargetValue = double.Parse(ProcessItemsCopy[index].ProcessParam);
+                    double StartValue = double.Parse((index > 0) ? ProcessStepsCopy[index - 1].ProcessParam : "0.0");
+                    double TargetValue = double.Parse(ProcessStepsCopy[index].ProcessParam);
                     double ChangeValue = TargetValue - StartValue;
-                    double CurrentValue = StartValue + ChangeValue * (timeSpan.TotalSeconds / ProcessItemsCopy[index].ProcessTime.TotalSeconds);
+                    double CurrentValue = StartValue + ChangeValue * (timeSpan.TotalSeconds / ProcessStepsCopy[index].ProcessTime.TotalSeconds);
                     Debug.WriteLine($"KP-OUT:{CurrentValue:0.0}");
                     break;
                 case "KP-WAIT-EVENT":

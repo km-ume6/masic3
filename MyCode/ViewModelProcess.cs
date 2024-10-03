@@ -12,8 +12,8 @@ namespace masic3.MyCode
     internal partial class ViewModelProcess : ObservableObject
     {
         // これらは入力用コントロールへバインドされる
-        [ObservableProperty] private ObservableCollection<ModelProcessItem> _processItems;
-        [ObservableProperty] private ModelProcessItem? _selectedProcessItem;
+        [ObservableProperty] private ObservableCollection<ModelProcessStep> _processSteps;
+        [ObservableProperty] private ModelProcessStep? _selectedProcessStep;
         [ObservableProperty] int _editProcessId;
         [ObservableProperty] string _editProcessCommand = string.Empty;
         [ObservableProperty] string _editProcessParam = string.Empty;
@@ -29,23 +29,23 @@ namespace masic3.MyCode
         [ObservableProperty] List<string> _commandItems;
         [ObservableProperty] string _testParam = string.Empty;
 
-        private ObservableCollection<ModelProcessItem> ProcessItemsCopy;
-        ModelProcessItem? currentProcessItem;
+        private ObservableCollection<ModelProcessStep> ProcessStepsCopy;
+        ModelProcessStep? currentProcessStep;
         DateTime dateTimeStartProcess;
-        DateTime dateTimeStartItem;
+        DateTime dateTimeStartStep;
 
         [ObservableProperty] public string _myMessage = string.Empty;
         public ICommand BindSelectionChanged { get; private set; }
 
         public ViewModelProcess()
         {
-            ProcessItems = new();
-            SelectedProcessItem = null;
-            currentProcessItem = null;
+            ProcessSteps = new();
+            SelectedProcessStep = null;
+            currentProcessStep = null;
 
             dateTimeStartProcess = DateTime.MinValue;
-            dateTimeStartItem = DateTime.MinValue;
-            ProcessItemsCopy = new();
+            dateTimeStartStep = DateTime.MinValue;
+            ProcessStepsCopy = new();
 
             CommandItems = new();
             if (CommandItems != null)
@@ -64,14 +64,14 @@ namespace masic3.MyCode
             string xmlFile = MakeXmlName();
             if (System.IO.File.Exists(xmlFile))
             {
-                var mySerializer = new XmlSerializer(typeof(ObservableCollection<ModelProcessItem>));
+                var mySerializer = new XmlSerializer(typeof(ObservableCollection<ModelProcessStep>));
                 using var myFileStream = new FileStream(xmlFile, FileMode.Open);
                 if (myFileStream != null)
                 {
                     var datas = mySerializer.Deserialize(myFileStream);
                     if (datas != null)
                     {
-                        ProcessItems = (ObservableCollection<ModelProcessItem>)datas;
+                        ProcessSteps = (ObservableCollection<ModelProcessStep>)datas;
                     }
                 }
             }
@@ -81,34 +81,34 @@ namespace masic3.MyCode
 
         void SelectionChangedCommand()
         {
-            if (SelectedProcessItem != null)
+            if (SelectedProcessStep != null)
             {
-                EditProcessId = SelectedProcessItem.ProcessId;
-                EditProcessCommand = SelectedProcessItem.ProcessCommand;
-                EditProcessParam = SelectedProcessItem.ProcessParam;
-                EditProcessTime = SelectedProcessItem.ProcessTime;
+                EditProcessId = SelectedProcessStep.ProcessId;
+                EditProcessCommand = SelectedProcessStep.ProcessCommand;
+                EditProcessParam = SelectedProcessStep.ProcessParam;
+                EditProcessTime = SelectedProcessStep.ProcessTime;
 
-                currentProcessItem = SelectedProcessItem;
-                SelectedProcessItem = null;
+                currentProcessStep = SelectedProcessStep;
+                SelectedProcessStep = null;
             }
         }
 
         [RelayCommand]
         void AddProcessItem()
         {
-            currentProcessItem = null;
-            ProcessItems.Add(new ModelProcessItem(ProcessItems.Count + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
+            currentProcessStep = null;
+            ProcessSteps.Add(new ModelProcessStep(ProcessSteps.Count + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
         }
         [RelayCommand]
         void UpdateProcessItem()
         {
-            if (currentProcessItem != null)
+            if (currentProcessStep != null)
             {
-                int index = ProcessItems.IndexOf(currentProcessItem);
+                int index = ProcessSteps.IndexOf(currentProcessStep);
                 if (index > -1)
                 {
-                    ProcessItems.RemoveAt(index);
-                    ProcessItems.Insert(index, new ModelProcessItem(index + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
+                    ProcessSteps.RemoveAt(index);
+                    ProcessSteps.Insert(index, new ModelProcessStep(index + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
                 }
             }
         }
@@ -116,13 +116,13 @@ namespace masic3.MyCode
         [RelayCommand]
         void InsertProcessItem()
         {
-            if (currentProcessItem != null)
+            if (currentProcessStep != null)
             {
-                int index = ProcessItems.IndexOf(currentProcessItem);
+                int index = ProcessSteps.IndexOf(currentProcessStep);
                 if (index > -1)
                 {
-                    ObservableCollection<ModelProcessItem> processItems = new(ProcessItems);
-                    processItems.Insert(index, currentProcessItem);
+                    ObservableCollection<ModelProcessStep> processItems = new(ProcessSteps);
+                    processItems.Insert(index, currentProcessStep);
                     ReNumber(ref processItems);
                 }
             }
@@ -132,12 +132,12 @@ namespace masic3.MyCode
         [RelayCommand]
         void RemoveProcessItem()
         {
-            if (currentProcessItem != null)
+            if (currentProcessStep != null)
             {
-                int index = ProcessItems.IndexOf(currentProcessItem);
+                int index = ProcessSteps.IndexOf(currentProcessStep);
                 if (index > -1)
                 {
-                    ObservableCollection<ModelProcessItem> processItems = new(ProcessItems);
+                    ObservableCollection<ModelProcessStep> processItems = new(ProcessSteps);
                     processItems.RemoveAt(index);
 
                     ReNumber(ref processItems);
@@ -147,16 +147,16 @@ namespace masic3.MyCode
             }
         }
 
-        void ReNumber(ref ObservableCollection<ModelProcessItem> items)
+        void ReNumber(ref ObservableCollection<ModelProcessStep> items)
         {
-            ProcessItems.Clear();
+            ProcessSteps.Clear();
 
-            ModelProcessItem item;
+            ModelProcessStep item;
             for (int i = 0; i < items.Count; i++)
             {
                 item = items[i];
                 item.ProcessId = i + 1;
-                ProcessItems.Add(new ModelProcessItem(item));
+                ProcessSteps.Add(new ModelProcessStep(item));
             }
 
             items.Clear();
@@ -170,9 +170,9 @@ namespace masic3.MyCode
         void Finalization()
         {
             // プロセスデータ書込み（保存）
-            XmlSerializer mySerializer = new(typeof(ObservableCollection<ModelProcessItem>));
+            XmlSerializer mySerializer = new(typeof(ObservableCollection<ModelProcessStep>));
             StreamWriter myWriter = new(MakeXmlName());
-            mySerializer.Serialize(myWriter, ProcessItems);
+            mySerializer.Serialize(myWriter, ProcessSteps);
             myWriter.Close();
 
             // その他データ書込み
@@ -184,17 +184,17 @@ namespace masic3.MyCode
         public void CheckedIsRunning()
         {
             dateTimeStartProcess = DateTime.Now;
-            dateTimeStartItem = dateTimeStartProcess;
+            dateTimeStartStep = dateTimeStartProcess;
             if (IsRunning == true)
             {
                 StartProcessDateTimeText = dateTimeStartProcess.ToString();
-                //StartItemDateTimeText = dateTimeStartItem.ToString("HH:mm:ss");
+                //StartItemDateTimeText = dateTimeStartStep.ToString("HH:mm:ss");
 
                 // プロセスデータをコピーする
-                ProcessItemsCopy.Clear();
-                for (int i = 0; i < ProcessItems.Count; i++)
+                ProcessStepsCopy.Clear();
+                for (int i = 0; i < ProcessSteps.Count; i++)
                 {
-                    ProcessItemsCopy.Add(new(ProcessItems[i]));
+                    ProcessStepsCopy.Add(new(ProcessSteps[i]));
                 }
             }
         }

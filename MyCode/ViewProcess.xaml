@@ -144,7 +144,7 @@
                 Margin="10"
                 VerticalOptions="FillAndExpand"
                 >
-                <CollectionView x:Name="ProcessItemCV" ItemsSource="{Binding ProcessItems}" SelectionMode="Single" SelectedItem="{Binding SelectedProcessItem}" SelectionChangedCommand="{Binding BindSelectionChanged}">
+                <CollectionView x:Name="ProcessItemCV" ItemsSource="{Binding ProcessSteps}" SelectionMode="Single" SelectedItem="{Binding SelectedProcessStep}" SelectionChangedCommand="{Binding BindSelectionChanged}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid>

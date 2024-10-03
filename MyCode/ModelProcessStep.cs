@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace masic3.MyCode
 {
-    public class ModelProcessItem
+    public class ModelProcessStep
     {
         public int ProcessId { get; set; }
         public string ProcessCommand { get; set; } = string.Empty;
@@ -14,11 +14,11 @@ namespace masic3.MyCode
         public TimeSpan ProcessTime { get; set; }
         public string ProcessTimeToString { get => ProcessTime.ToString(@"hh\:mm"); }
 
-        public ModelProcessItem()
+        public ModelProcessStep()
         {
         }
 
-        public ModelProcessItem(int porecessId, string processName, string processParam, TimeSpan processTime)
+        public ModelProcessStep(int porecessId, string processName, string processParam, TimeSpan processTime)
         {
             ProcessId = porecessId;
             ProcessCommand = processName ?? throw new ArgumentNullException(nameof(processName));
@@ -26,7 +26,7 @@ namespace masic3.MyCode
             ProcessTime = processTime;
         }
 
-        public ModelProcessItem(ModelProcessItem item) : this(item.ProcessId, item.ProcessCommand, item.ProcessParam, item.ProcessTime)
+        public ModelProcessStep(ModelProcessStep item) : this(item.ProcessId, item.ProcessCommand, item.ProcessParam, item.ProcessTime)
         {
         }
     }
