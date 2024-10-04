@@ -13,24 +13,24 @@ namespace masic3.MyCode
     {
         // これらは入力用コントロールへバインドされる
         [ObservableProperty] private ObservableCollection<ModelProcessStep> _processSteps;
-        [ObservableProperty] private ModelProcessStep? _selectedProcessStep;
-        [ObservableProperty] int _editProcessId;
-        [ObservableProperty] string _editProcessCommand = string.Empty;
-        [ObservableProperty] string _editProcessParam = string.Empty;
-        [ObservableProperty] TimeSpan _editProcessTime;
+        [ObservableProperty] private ModelProcessStep? _selectedStep;
+        [ObservableProperty] int _editStepId;
+        [ObservableProperty] string _editStepCommand = string.Empty;
+        [ObservableProperty] string _editStepParam = string.Empty;
+        [ObservableProperty] TimeSpan _editStepTime;
         [ObservableProperty] bool _isRunning;
         [ObservableProperty] bool _isAdvance;
         [ObservableProperty] string _startProcessDateTimeText = string.Empty;
-        [ObservableProperty] string _startItemDateTimeText = string.Empty;
+        [ObservableProperty] string _startStepDateTimeText = string.Empty;
         [ObservableProperty] string _pastProcessDateTimeText = string.Empty;
-        [ObservableProperty] string _pastItemDateTimeText = string.Empty;
-        [ObservableProperty] string _currentProcessIndexText = string.Empty;
+        [ObservableProperty] string _pastStepDateTimeText = string.Empty;
+        [ObservableProperty] string _currentStepIndexText = string.Empty;
         [ObservableProperty] bool _isCheckedTest;
-        [ObservableProperty] List<string> _commandItems;
+        [ObservableProperty] List<string> _commandSteps;
         [ObservableProperty] string _testParam = string.Empty;
 
         private ObservableCollection<ModelProcessStep> ProcessStepsCopy;
-        ModelProcessStep? currentProcessStep;
+        ModelProcessStep? currentStep;
         DateTime dateTimeStartProcess;
         DateTime dateTimeStartStep;
 
@@ -40,19 +40,19 @@ namespace masic3.MyCode
         public ViewModelProcess()
         {
             ProcessSteps = new();
-            SelectedProcessStep = null;
-            currentProcessStep = null;
+            SelectedStep = null;
+            currentStep = null;
 
             dateTimeStartProcess = DateTime.MinValue;
             dateTimeStartStep = DateTime.MinValue;
             ProcessStepsCopy = new();
 
-            CommandItems = new();
-            if (CommandItems != null)
+            CommandSteps = new();
+            if (CommandSteps != null)
             {
-                CommandItems.Add("KP-OUT");
-                CommandItems.Add("KP-SEND");
-                CommandItems.Add("KP-WAIT-EVENT");
+                CommandSteps.Add("KP-OUT");
+                CommandSteps.Add("KP-SEND");
+                CommandSteps.Add("KP-WAIT-EVENT");
             }
 
             // バインディング用のコマンド作成
@@ -81,60 +81,59 @@ namespace masic3.MyCode
 
         void SelectionChangedCommand()
         {
-            if (SelectedProcessStep != null)
+            if (SelectedStep != null)
             {
-                EditProcessId = SelectedProcessStep.ProcessId;
-                EditProcessCommand = SelectedProcessStep.ProcessCommand;
-                EditProcessParam = SelectedProcessStep.ProcessParam;
-                EditProcessTime = SelectedProcessStep.ProcessTime;
+                EditStepId = SelectedStep.ProcessId;
+                EditStepCommand = SelectedStep.ProcessCommand;
+                EditStepParam = SelectedStep.ProcessParam;
+                EditStepTime = SelectedStep.ProcessTime;
 
-                currentProcessStep = SelectedProcessStep;
-                SelectedProcessStep = null;
+                currentStep = SelectedStep;
+                SelectedStep = null;
             }
         }
 
         [RelayCommand]
-        void AddProcessItem()
+        void AddProcessStep()
         {
-            currentProcessStep = null;
-            ProcessSteps.Add(new ModelProcessStep(ProcessSteps.Count + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
+            currentStep = null;
+            ProcessSteps.Add(new ModelProcessStep(ProcessSteps.Count + 1, EditStepCommand, EditStepParam, EditStepTime));
         }
         [RelayCommand]
-        void UpdateProcessItem()
+        void UpdateProcessStep()
         {
-            if (currentProcessStep != null)
+            if (currentStep != null)
             {
-                int index = ProcessSteps.IndexOf(currentProcessStep);
+                int index = ProcessSteps.IndexOf(currentStep);
                 if (index > -1)
                 {
                     ProcessSteps.RemoveAt(index);
-                    ProcessSteps.Insert(index, new ModelProcessStep(index + 1, EditProcessCommand, EditProcessParam, EditProcessTime));
+                    ProcessSteps.Insert(index, new ModelProcessStep(index + 1, EditStepCommand, EditStepParam, EditStepTime));
                 }
             }
         }
 
         [RelayCommand]
-        void InsertProcessItem()
+        void InsertProcessStep()
         {
-            if (currentProcessStep != null)
+            if (currentStep != null)
             {
-                int index = ProcessSteps.IndexOf(currentProcessStep);
+                int index = ProcessSteps.IndexOf(currentStep);
                 if (index > -1)
                 {
                     ObservableCollection<ModelProcessStep> processItems = new(ProcessSteps);
-                    processItems.Insert(index, currentProcessStep);
+                    processItems.Insert(index, currentStep);
                     ReNumber(ref processItems);
                 }
             }
         }
 
-
         [RelayCommand]
         void RemoveProcessItem()
         {
-            if (currentProcessStep != null)
+            if (currentStep != null)
             {
-                int index = ProcessSteps.IndexOf(currentProcessStep);
+                int index = ProcessSteps.IndexOf(currentStep);
                 if (index > -1)
                 {
                     ObservableCollection<ModelProcessStep> processItems = new(ProcessSteps);
@@ -204,7 +203,6 @@ namespace masic3.MyCode
 
         }
 
-
         /// <summary>
         /// 実行ファイル名の拡張子をxmlに変えた文字列を返す
         /// </summary>
@@ -217,10 +215,10 @@ namespace masic3.MyCode
 
         void ClearEditProcessItem()
         {
-            EditProcessId = 0;
-            EditProcessCommand = string.Empty;
-            EditProcessParam = string.Empty;
-            EditProcessTime = TimeSpan.Zero;
+            EditStepId = 0;
+            EditStepCommand = string.Empty;
+            EditStepParam = string.Empty;
+            EditStepTime = TimeSpan.Zero;
         }
 
         string TimeSpanToString(TimeSpan ts)

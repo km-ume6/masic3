@@ -12,23 +12,23 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="65"/>
-                <!-- プロセス設定ボタンエリア -->
+                <!-- ステップ設定ボタンエリア -->
                 <RowDefinition Height="85"/>
-                <!-- プロセス入力 -->
+                <!-- ステップ入力 -->
                 <RowDefinition Height="*"/>
-                <!-- プロセス一覧 -->
+                <!-- ステップ一覧 -->
                 <RowDefinition Height="1*"/>
                 <!-- モニタエリア -->
                 <RowDefinition Height="0.5*"/>
                 <!-- コマンドエリア -->
             </Grid.RowDefinitions>
 
-            <!-- プロセス設定ボタンエリア -->
+            <!-- ステップ設定ボタンエリア -->
             <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Start" Spacing="4">
-                <Button Text="追加" Command="{Binding AddProcessItemCommand}"/>
-                <Button Text="挿入" Command="{Binding InsertProcessItemCommand}"/>
-                <Button Text="更新" Command="{Binding UpdateProcessItemCommand}"/>
-                <Button Text="削除" Command="{Binding RemoveProcessItemCommand}"/>
+                <Button Text="追加" Command="{Binding AddProcessStepCommand}"/>
+                <Button Text="挿入" Command="{Binding InsertProcessStepCommand}"/>
+                <Button Text="更新" Command="{Binding UpdateProcessStepCommand}"/>
+                <Button Text="削除" Command="{Binding RemoveProcessStepCommand}"/>
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -67,7 +67,7 @@
                 </Grid>
             </HorizontalStackLayout>
 
-            <!-- プロセス入力エリア（Gridに対して共通スタイルを適用） -->
+            <!-- ステップ入力エリア（Gridに対して共通スタイルを適用） -->
             <Grid
                 Style="{StaticResource gridStyle}"
                 Grid.Row="1"
@@ -87,32 +87,27 @@
                     <ColumnDefinition Width="245" x:Name="C4_W"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- プロセスID入力 -->
-                <Entry Grid.Row="0" Grid.Column="0" Text="{Binding EditProcessId}"
+                <!-- ステップID入力 -->
+                <Entry Grid.Row="0" Grid.Column="0" Text="{Binding EditStepId}"
                        IsReadOnly="True"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="End"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C1_HTA"
                        />
-                <!-- プロセスコマンド -->
-                <!--<Entry Grid.Row="0" Grid.Column="1" Text="{Binding EditProcessCommand}"
-                       VerticalTextAlignment="Center" HorizontalTextAlignment="End"
-                       BackgroundColor="DarkOliveGreen"
-                       x:Name="C2_HTA"
-                       />-->
-                <Picker Grid.Row="0" Grid.Column="1" ItemsSource="{Binding CommandItems}" SelectedItem="{Binding EditProcessCommand}"
+                <!-- ステップコマンド -->
+                <Picker Grid.Row="0" Grid.Column="1" ItemsSource="{Binding CommandSteps}" SelectedItem="{Binding EditStepCommand}"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C2_HTA"
                         />
-                <!-- プロセスパラメータ -->
-                <Entry Grid.Row="0" Grid.Column="2" Text="{Binding EditProcessParam}"
+                <!-- ステップパラメータ -->
+                <Entry Grid.Row="0" Grid.Column="2" Text="{Binding EditStepParam}"
                        HorizontalTextAlignment="End"
                        VerticalOptions="Fill"
                        BackgroundColor="DarkOliveGreen"
                        x:Name="C3_HTA"
                        />
-                <!-- プロセス時間入力 -->
-                <TimePicker Grid.Row="0" Grid.Column="3" Time="{Binding EditProcessTime}" Format="HH:mm"
+                <!-- ステップ時間入力 -->
+                <TimePicker Grid.Row="0" Grid.Column="3" Time="{Binding EditStepTime}" Format="HH:mm"
                             HorizontalOptions="Center"
                             VerticalOptions="Fill"
                             BackgroundColor="DarkOliveGreen"
@@ -137,14 +132,14 @@
                        />
             </Grid>
 
-            <!-- プロセス一覧エリア(CollectionView) -->
+            <!-- ステップ一覧エリア(CollectionView) -->
             <Grid
                 Style="{StaticResource gridStyle}"
                 Grid.Row="2"
                 Margin="10"
                 VerticalOptions="FillAndExpand"
                 >
-                <CollectionView x:Name="ProcessItemCV" ItemsSource="{Binding ProcessSteps}" SelectionMode="Single" SelectedItem="{Binding SelectedProcessStep}" SelectionChangedCommand="{Binding BindSelectionChanged}">
+                <CollectionView x:Name="ProcessItemCV" ItemsSource="{Binding ProcessSteps}" SelectionMode="Single" SelectedItem="{Binding SelectedStep}" SelectionChangedCommand="{Binding BindSelectionChanged}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -194,7 +189,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <!-- 制御モニタ-->
+                    <!-- プロセスモニタ-->
                     <Grid 
                         Style="{StaticResource gridStyle}"
                         Grid.Row="0"
@@ -205,13 +200,13 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Text="制御開始日時"
+                        <Label Grid.Row="0" Grid.Column="0" Text="プロセス開始日時"
                            Style="{StaticResource labelStyle}"
                                />
                         <Label Grid.Row="0" Grid.Column="1" Text="{Binding StartProcessDateTimeText}"
                            Style="{StaticResource labelStyle}"
                                />
-                        <Label Grid.Row="0" Grid.Column="2" Text="制御経過時間"
+                        <Label Grid.Row="0" Grid.Column="2" Text="プロセス経過時間"
                            Style="{StaticResource labelStyle}"
                                />
                         <Label Grid.Row="0" Grid.Column="3" Text="{Binding PastProcessDateTimeText}"
@@ -219,7 +214,7 @@
                                />
                     </Grid>
 
-                    <!-- プロセスモニタ-->
+                    <!-- ステップモニタ-->
                     <Grid 
                         Style="{StaticResource gridStyle}"
                         Grid.Row="1"
@@ -232,22 +227,22 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="1" Grid.Column="0" Text="プロセス番号"
+                        <Label Grid.Row="1" Grid.Column="0" Text="ステップ番号"
                            Style="{StaticResource labelStyle}"
                                />
-                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding CurrentProcessIndexText}"
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding CurrentStepIndexText}"
                            Style="{StaticResource labelStyle}"
                                />
-                        <Label Grid.Row="1" Grid.Column="2" Text="プロセス開始"
+                        <Label Grid.Row="1" Grid.Column="2" Text="ステップ開始"
                            Style="{StaticResource labelStyle}"
                                />
-                        <Label Grid.Row="1" Grid.Column="3" Text="{Binding StartItemDateTimeText}"
+                        <Label Grid.Row="1" Grid.Column="3" Text="{Binding StartStepDateTimeText}"
                            Style="{StaticResource labelStyle}"
                                />
-                        <Label Grid.Row="1" Grid.Column="4" Text="プロセス経過"
+                        <Label Grid.Row="1" Grid.Column="4" Text="ステップ経過"
                            Style="{StaticResource labelStyle}"
                                />
-                        <Label Grid.Row="1" Grid.Column="5" Text="{Binding PastItemDateTimeText}"
+                        <Label Grid.Row="1" Grid.Column="5" Text="{Binding PastStepDateTimeText}"
                            Style="{StaticResource labelStyle}"
                                />
                     </Grid>

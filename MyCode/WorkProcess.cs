@@ -40,25 +40,6 @@ namespace masic3.MyCode
                             timeSpanSum = ProcessStepsCopy[currentStepIndex].ProcessTime;
 
                             // ステップ経過処理
-                            //foreach (ModelProcessStep item in ProcessStepsCopy)
-                            //{
-                            //    if (timeSpan < timeSpanSum)
-                            //    {
-                            //        gotoNext = Processing(currentStepIndex, dateTimeNow - dateTimeStartStep);
-                            //        break;
-                            //    }
-                            //    else
-                            //    {
-                            //        // ステップが終了と判定
-
-                            //        // 次のステップに進む準備
-                            //        dateTimeStartStep = dateTimeStartProcess + timeSpanSum;
-                            //        timeSpanSum += item.ProcessTime;
-                            //    }
-
-                            //    currentStepIndex++;
-                            //}
-                            ModelProcessStep item;
                             for (int i = 0; i < ProcessStepsCopy.Count; i++)
                             {
                                 if (timeSpan < timeSpanSum)
@@ -96,16 +77,13 @@ namespace masic3.MyCode
                                 gotoNext = false;
                             }
 
-                            //ModelProcessStep mi = ProcessStepsCopy[currentStepIndex];
-                            //Debug.WriteLine($"P:{mi.ProcessId:0}, T: {(dateTimeNow - dateTimeStartStep).TotalSeconds:0} / {mi.ProcessTime.TotalSeconds:0}");
-
                             // コントロール表示更新
                             if (currentStepIndex < ProcessStepsCopy.Count)
                             {
-                                CurrentProcessIndexText = ProcessStepsCopy[currentStepIndex].ProcessId.ToString();
+                                CurrentStepIndexText = ProcessStepsCopy[currentStepIndex].ProcessId.ToString();
                             }
-                            StartItemDateTimeText = dateTimeStartStep.ToString("HH:mm:ss");
-                            PastItemDateTimeText = TimeSpanToString(dateTimeNow - dateTimeStartStep);
+                            StartStepDateTimeText = dateTimeStartStep.ToString("HH:mm:ss");
+                            PastStepDateTimeText = TimeSpanToString(dateTimeNow - dateTimeStartStep);
 
                             if (currentStepIndex >= ProcessStepsCopy.Count)
                             {
