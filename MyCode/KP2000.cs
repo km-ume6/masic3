@@ -26,7 +26,8 @@ namespace masic3.MyCode
 
         public void Init()
         {
-            port.PortName = Properties.Settings.Default.SerialPort;
+            //port.PortName = Properties.Settings.Default.SerialPort;
+            port.PortName = Preferences.Default.Get("SerialPort", "COM1");
             port.BaudRate = 38400;
             port.Parity = Parity.Even;
             port.DataBits = 7;
@@ -38,7 +39,8 @@ namespace masic3.MyCode
 
         string Communicate(string wFrame)
         {
-            if (Properties.Settings.Default.EnabledKP != true || wFrame == "") { return ""; }
+            //if (Properties.Settings.Default.EnabledKP != true || wFrame == "") { return ""; }
+            if (Preferences.Default.Get("EnabledKP",false) != true || wFrame == "") { return ""; }
 
             string copyFrame = wFrame, readFrame = "";
             char[] buff = new char[32];
