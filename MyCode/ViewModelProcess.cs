@@ -96,6 +96,19 @@ namespace masic3.MyCode
         [RelayCommand]
         void AddProcessStep()
         {
+            switch (EditStepCommand)
+            {
+                case "KP-OUT":
+                    if (string.IsNullOrEmpty(EditStepParam) || !EditStepParam.All(char.IsDigit))
+                    {
+                        // メッセージウィンドウを表示
+                        Application.Current?.MainPage?.DisplayAlert("エラー", "無効なパラメータです。", "OK");
+                        return;
+                    }                    
+                    break;
+                default:
+                    break;
+            }
             currentStep = null;
             ProcessSteps.Add(new ModelProcessStep(ProcessSteps.Count + 1, EditStepCommand, EditStepParam, EditStepTime));
         }
@@ -129,7 +142,7 @@ namespace masic3.MyCode
         }
 
         [RelayCommand]
-        void RemoveProcessItem()
+        void RemoveProcessStep()
         {
             if (currentStep != null)
             {
