@@ -99,12 +99,10 @@ namespace masic3.MyCode
             switch (EditStepCommand)
             {
                 case "KP-OUT":
-                    if (string.IsNullOrEmpty(EditStepParam) || !EditStepParam.All(char.IsDigit))
+                    if (IsNumeric(EditStepParam, "KP-OUTのとき、パラメータは数値限定です。") != true)
                     {
-                        // メッセージウィンドウを表示
-                        Application.Current?.MainPage?.DisplayAlert("エラー", "無効なパラメータです。", "OK");
                         return;
-                    }                    
+                    }
                     break;
                 default:
                     break;
@@ -115,7 +113,7 @@ namespace masic3.MyCode
         [RelayCommand]
         void UpdateProcessStep()
         {
-            if (currentStep != null)
+            if (currentStep != null && IsNumeric(EditStepParam, "KP-OUTのとき、パラメータは数値限定です。"))
             {
                 int index = ProcessSteps.IndexOf(currentStep);
                 if (index > -1)
@@ -237,6 +235,23 @@ namespace masic3.MyCode
         string TimeSpanToString(TimeSpan ts)
         {
             return $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}";
+        }
+
+        /// <summary>
+        /// 入力文字列が数値かどうかを判定します。
+        /// 数値でない場合、エラーメッセージを表示します。
+        /// </summary>
+        /// <param name="input">判定する入力文字列</param>
+        /// <param name="msgString">エラーメッセージ</param>
+        /// <returns>入力文字列が数値の場合はtrue、それ以外の場合はfalse</returns>
+        private bool IsNumeric(string input, string msgString)
+        {
+            bool result = !string.IsNullOrEmpty(input) && input.All(char.IsDigit);
+            if (!result)
+            {
+                Application.Current?.MainPage?.DisplayAlert("エラー", msgString, "OK");
+            }
+            return result;
         }
     }
 }
