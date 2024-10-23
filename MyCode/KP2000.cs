@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace masic3.MyCode
 {
+    [SupportedOSPlatform("Windows")]
     internal class KP2000 : IDisposable
     {
-        SerialPort port = new SerialPort();
-        ModbusAscii frame = new ModbusAscii();
+        SerialPort port = new();
+        ModbusAscii frame = new();
         private bool disposedValue;
 
         public bool IsOpen => port.IsOpen;
@@ -165,6 +167,5 @@ namespace masic3.MyCode
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
-
     }
 }
